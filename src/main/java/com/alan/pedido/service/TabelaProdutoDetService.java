@@ -10,7 +10,6 @@ import com.alan.pedido.exception.ResourceNotFoundException;
 import com.alan.pedido.model.TabelaProduto;
 import com.alan.pedido.model.TabelaProdutoDet;
 import com.alan.pedido.repository.TabelaProdutoDetRepository;
-import com.alan.pedido.repository.TabelaProdutoRepository;
 
 @Service
 public class TabelaProdutoDetService {
@@ -19,7 +18,7 @@ public class TabelaProdutoDetService {
     TabelaProdutoDetRepository tabelaprodutodetRepository;  
     
     @Autowired
-    TabelaProdutoRepository tabelaprodutoRepository;  
+    TabelaProdutoService tabelaprodutoService;  
 	
 	public List<TabelaProdutoDet> lista(){
 		return tabelaprodutodetRepository.findAll();
@@ -32,8 +31,7 @@ public class TabelaProdutoDetService {
 	
     public TabelaProdutoDet inserir(TabelaProdutoDet tabelaprodutodet) {    	
         
-        TabelaProduto tabelaproduto = tabelaprodutoRepository.findById(tabelaprodutodet.getTabelaproduto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("TabelaProduto", "id", tabelaprodutodet.getTabelaproduto().getId()));        
+        TabelaProduto tabelaproduto = tabelaprodutoService.listaId(tabelaprodutodet.getTabelaproduto().getId());        
  
         tabelaprodutodet.setTabelaproduto(tabelaproduto);    	
     	
@@ -46,8 +44,7 @@ public class TabelaProdutoDetService {
         TabelaProdutoDet tabelaprodutodet = tabelaprodutodetRepository.findById(tabelaprodutodetId)
                 .orElseThrow(() -> new ResourceNotFoundException("TabelaProdutoDet", "id", tabelaprodutodetId));
         
-        TabelaProduto tabelaproduto = tabelaprodutoRepository.findById(tabelaprodutodetDetails.getTabelaproduto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("TabelaProduto", "id", tabelaprodutodetDetails.getTabelaproduto().getId()));        
+        TabelaProduto tabelaproduto = tabelaprodutoService.listaId(tabelaprodutodet.getTabelaproduto().getId());
  
         tabelaprodutodet.setId(tabelaprodutodetDetails.getId());
         tabelaprodutodet.setTabelaproduto(tabelaproduto);

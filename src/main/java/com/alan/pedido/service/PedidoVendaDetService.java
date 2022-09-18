@@ -13,9 +13,6 @@ import com.alan.pedido.model.PedidoVendaDet;
 import com.alan.pedido.model.Produto;
 import com.alan.pedido.model.TabelaProduto;
 import com.alan.pedido.repository.PedidoVendaDetRepository;
-import com.alan.pedido.repository.PedidoVendaRepository;
-import com.alan.pedido.repository.ProdutoRepository;
-import com.alan.pedido.repository.TabelaProdutoRepository;
 
 @Service
 public class PedidoVendaDetService {
@@ -24,13 +21,13 @@ public class PedidoVendaDetService {
     PedidoVendaDetRepository pedidovendadetRepository;
     
     @Autowired
-    PedidoVendaRepository pedidovendaRepository;    
+    PedidoVendaService pedidovendaService;    
     
     @Autowired
-    ProdutoRepository produtoRepository;        
+    ProdutoService produtoService;        
     
     @Autowired
-    TabelaProdutoRepository tabelaprodutoRepository;
+    TabelaProdutoService tabelaprodutoService;
 
 	
 	public List<PedidoVendaDet> lista(){
@@ -44,8 +41,7 @@ public class PedidoVendaDetService {
     public PedidoVenda atuValores( Integer pedidovendaId) {
  
         
-        PedidoVenda pedidovenda = pedidovendaRepository.findById(pedidovendaId)
-                .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendaId));       
+        PedidoVenda pedidovenda = pedidovendaService.listaId(pedidovendaId);       
 
         List<PedidoVendaDet> itens = new ArrayList<PedidoVendaDet>();
         
@@ -65,7 +61,7 @@ public class PedidoVendaDetService {
         pedidovenda.setDesconto(desconto);
         pedidovenda.setTotaldesc(totaldesc);
         
-        PedidoVenda updatedPedidoVenda = pedidovendaRepository.save(pedidovenda);
+        PedidoVenda updatedPedidoVenda = pedidovendaService.atualiza(pedidovendaId, pedidovenda);
         return updatedPedidoVenda;
     }  
 	
@@ -76,16 +72,13 @@ public class PedidoVendaDetService {
 	
     public PedidoVendaDet inserir(PedidoVendaDet pedidovendadet) {    	
         
-        PedidoVenda pedidovenda = pedidovendaRepository.findById(pedidovendadet.getPedidovenda().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendadet.getPedidovenda().getId()));                
+        PedidoVenda pedidovenda = pedidovendaService.listaId(pedidovendadet.getPedidovenda().getId());               
         
-        Produto produto = produtoRepository.findById(pedidovendadet.getProduto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto", "id", pedidovendadet.getProduto().getId()));
+        Produto produto = produtoService.listaId(pedidovendadet.getProduto().getId());
         
         if(pedidovendadet.getTabelaproduto() != null) {
 	        
-	        TabelaProduto tabelaproduto = tabelaprodutoRepository.findById(pedidovendadet.getTabelaproduto().getId())
-	                .orElseThrow(() -> new ResourceNotFoundException("TabelaProduto", "id", pedidovendadet.getTabelaproduto().getId()));               
+	        TabelaProduto tabelaproduto = tabelaprodutoService.listaId(pedidovendadet.getTabelaproduto().getId());               
  
 	        pedidovendadet.setTabelaproduto(tabelaproduto);
 	        
@@ -104,14 +97,11 @@ public class PedidoVendaDetService {
         PedidoVendaDet pedidovendadet = pedidovendadetRepository.findById(pedidovendadetDetails.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendadetDetails.getId()));      
         
-        PedidoVenda pedidovenda = pedidovendaRepository.findById(pedidovendadetDetails.getPedidovenda().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendadetDetails.getPedidovenda().getId()));                
+        PedidoVenda pedidovenda = pedidovendaService.listaId(pedidovendadetDetails.getPedidovenda().getId());                
         
-        Produto produto = produtoRepository.findById(pedidovendadetDetails.getProduto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto", "id", pedidovendadetDetails.getProduto().getId()));
+        Produto produto = produtoService.listaId(pedidovendadetDetails.getProduto().getId());
         
-        TabelaProduto tabelaproduto = tabelaprodutoRepository.findById(pedidovendadetDetails.getTabelaproduto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("TabelaProduto", "id", pedidovendadetDetails.getTabelaproduto().getId()));               
+        TabelaProduto tabelaproduto = tabelaprodutoService.listaId(pedidovendadetDetails.getTabelaproduto().getId());               
  
         pedidovendadet.setId(pedidovendadetDetails.getId());        
         pedidovendadet.setPedidovenda(pedidovenda);

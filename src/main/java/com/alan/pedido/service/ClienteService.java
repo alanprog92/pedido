@@ -10,7 +10,6 @@ import com.alan.pedido.exception.ResourceNotFoundException;
 import com.alan.pedido.model.Cliente;
 import com.alan.pedido.model.Vendedor;
 import com.alan.pedido.repository.ClienteRepository;
-import com.alan.pedido.repository.VendedorRepository;
 
 @Service
 public class ClienteService {
@@ -19,7 +18,7 @@ public class ClienteService {
     ClienteRepository clienteRepository;
     
     @Autowired
-    VendedorRepository vendedorRepository;    
+    VendedorService vendedorService;    
 	
 	public List<Cliente> lista(){
 		return clienteRepository.findAll();
@@ -36,8 +35,7 @@ public class ClienteService {
 	
     public Cliente inserir(Cliente cliente) {
     	
-        Vendedor vendedor = vendedorRepository.findById(cliente.getVendedor().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Vendedor", "id", cliente.getVendedor().getId()));   
+        Vendedor vendedor = vendedorService.listaId(cliente.getVendedor().getId());   
         
         cliente.setVendedor(vendedor);
         
@@ -48,8 +46,7 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente", "id", clienteId));
         
-        Vendedor vendedor = vendedorRepository.findById(clienteDetails.getVendedor().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Vendedor", "id", clienteDetails.getVendedor().getId()));        
+        Vendedor vendedor = vendedorService.listaId(cliente.getVendedor().getId());        
  
         cliente.setId(clienteDetails.getId());
         cliente.setNome(clienteDetails.getNome());

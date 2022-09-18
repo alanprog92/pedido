@@ -14,37 +14,28 @@ import com.alan.pedido.model.FormaPgto;
 import com.alan.pedido.model.PedidoVenda;
 import com.alan.pedido.model.PrazoVencimento;
 import com.alan.pedido.model.Vendedor;
-import com.alan.pedido.repository.ClienteRepository;
-import com.alan.pedido.repository.CondPgtoRepository;
-import com.alan.pedido.repository.FormaPgtoRepository;
-import com.alan.pedido.repository.PedidoVendaDetRepository;
 import com.alan.pedido.repository.PedidoVendaRepository;
-import com.alan.pedido.repository.PrazoVencimentoRepository;
-import com.alan.pedido.repository.VendedorRepository;
 
 @Service
 public class PedidoVendaService {
 	
     @Autowired
-    PedidoVendaRepository pedidovendaRepository;
+    PedidoVendaRepository pedidovendaRepository;   
     
     @Autowired
-    PedidoVendaDetRepository pedidovendadetRepository;    
+    ClienteService clienteService;    
     
     @Autowired
-    ClienteRepository clienteRepository;    
+    CondPgtoService condpgtoService;        
     
     @Autowired
-    CondPgtoRepository condpgtoRepository;        
+    FormaPgtoService formapgtoService;        
     
     @Autowired
-    FormaPgtoRepository formapgtoRepository;        
+    PrazoVencimentoService prazovencimentoService; 
     
     @Autowired
-    PrazoVencimentoRepository prazovencimentoRepository; 
-    
-    @Autowired
-    VendedorRepository vendedorRepository;     
+    VendedorService vendedorService;     
      
 	
 	public List<PedidoVenda> lista(){
@@ -56,7 +47,26 @@ public class PedidoVendaService {
                 .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendaId));
 	}
 	
-    public PedidoVenda inserir(PedidoVenda pedidovenda) {    	
+    public PedidoVenda inserir(PedidoVenda pedidovenda) {    
+    	
+        Cliente cliente = clienteService.listaId(pedidovenda.getCliente().getId());
+        
+        CondPgto condpgto = condpgtoService.listaId(pedidovenda.getCondpgto().getId());      
+        
+        FormaPgto formapgto = formapgtoService.listaId(pedidovenda.getFormapgto().getId());
+        
+        PrazoVencimento prazovencimento = prazovencimentoService.listaId(pedidovenda.getPrazovencimento().getId());
+        
+		Vendedor vendedor = vendedorService.listaId(pedidovenda.getVendedor().getId()); 
+		
+		 
+        pedidovenda.setCliente(cliente);
+        pedidovenda.setCondpgto(condpgto);
+        pedidovenda.setFormapgto(formapgto);
+        pedidovenda.setPrazovencimento(prazovencimento);
+        pedidovenda.setVendedor(vendedor);
+		
+		
         
         return pedidovendaRepository.save(pedidovenda);
         
@@ -68,20 +78,15 @@ public class PedidoVendaService {
                 .orElseThrow(() -> new ResourceNotFoundException("PedidoVenda", "id", pedidovendaId));
         
         
-        Cliente cliente = clienteRepository.findById(pedidovendaDetails.getCliente().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", "id", pedidovendaDetails.getCliente().getId()));
+        Cliente cliente = clienteService.listaId(pedidovendaDetails.getCliente().getId());
         
-        CondPgto condpgto = condpgtoRepository.findById(pedidovendaDetails.getCondpgto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("CondPgto", "id", pedidovendaDetails.getCondpgto().getId()));        
+        CondPgto condpgto = condpgtoService.listaId(pedidovendaDetails.getCondpgto().getId());      
         
-        FormaPgto formapgto = formapgtoRepository.findById(pedidovendaDetails.getFormapgto().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("FormaPgto", "id", pedidovendaDetails.getFormapgto().getId()));
+        FormaPgto formapgto = formapgtoService.listaId(pedidovendaDetails.getFormapgto().getId());
         
-        PrazoVencimento prazovencimento = prazovencimentoRepository.findById(pedidovendaDetails.getPrazovencimento().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("PrazoVencimento", "id", pedidovendaDetails.getPrazovencimento().getId()));
+        PrazoVencimento prazovencimento = prazovencimentoService.listaId(pedidovendaDetails.getPrazovencimento().getId());
         
-		Vendedor vendedor = vendedorRepository.findById(pedidovendaDetails.getVendedor().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Vendedor", "id", pedidovendaDetails.getVendedor().getId()));           
+		Vendedor vendedor = vendedorService.listaId(pedidovendaDetails.getVendedor().getId());        
         
  
         pedidovenda.setId(pedidovendaDetails.getId());        

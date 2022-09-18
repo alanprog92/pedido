@@ -10,7 +10,6 @@ import com.alan.pedido.exception.ResourceNotFoundException;
 import com.alan.pedido.model.PrazoVencimento;
 import com.alan.pedido.model.PrazoVencimentoDet;
 import com.alan.pedido.repository.PrazoVencimentoDetRepository;
-import com.alan.pedido.repository.PrazoVencimentoRepository;
 
 @Service
 public class PrazoVencimentoDetService {
@@ -19,7 +18,7 @@ public class PrazoVencimentoDetService {
     PrazoVencimentoDetRepository prazovencimentodetRepository;  
     
     @Autowired
-    PrazoVencimentoRepository prazovencimentoRepository;      
+    PrazoVencimentoService prazovencimentoService;      
 	
 	public List<PrazoVencimentoDet> lista(){
 		return prazovencimentodetRepository.findAll();
@@ -32,8 +31,7 @@ public class PrazoVencimentoDetService {
 	
     public PrazoVencimentoDet inserir(PrazoVencimentoDet prazovencimentodet) {    	
         
-        PrazoVencimento prazovencimento = prazovencimentoRepository.findById(prazovencimentodet.getPrazovencimento().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("PrazoVencimento", "id", prazovencimentodet.getPrazovencimento().getId()));
+        PrazoVencimento prazovencimento = prazovencimentoService.listaId(prazovencimentodet.getPrazovencimento().getId());
 
         prazovencimentodet.setPrazovencimento(prazovencimento); 
     	
@@ -46,8 +44,7 @@ public class PrazoVencimentoDetService {
         PrazoVencimentoDet prazovencimentodet = prazovencimentodetRepository.findById(prazovencimentodetId)
                 .orElseThrow(() -> new ResourceNotFoundException("PrazoVencimentoDet", "id", prazovencimentodetId));
         
-        PrazoVencimento prazovencimento = prazovencimentoRepository.findById(prazovencimentodetDetails.getPrazovencimento().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("PrazoVencimentoDet", "id", prazovencimentodetId));
+        PrazoVencimento prazovencimento = prazovencimentoService.listaId(prazovencimentodet.getPrazovencimento().getId());
  
         prazovencimentodet.setId(prazovencimentodetDetails.getId());
         prazovencimentodet.setPrazovencimento(prazovencimento);
