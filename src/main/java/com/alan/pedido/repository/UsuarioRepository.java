@@ -20,4 +20,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 	public List<Usuario> buscaUsuario(@Param("login") String login,
 			                                     @Param("senha") String senha);
 	
+	@Query("select u from Usuario u where u.login = ?1")
+	Usuario findUserByLogin(String login);
+	
 }

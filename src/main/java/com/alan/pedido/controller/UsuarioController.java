@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alan.pedido.dto.UsuarioDTO;
 import com.alan.pedido.model.Usuario;
 import com.alan.pedido.service.UsuarioService;
 
@@ -29,23 +30,24 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @GetMapping("/usuarios")
-    public List<Usuario> getAllUsuarios() {
+    public List<UsuarioDTO> getAllUsuarios() {
         return usuarioService.lista();
     }
 
     @PostMapping("/usuarios")
     public Usuario createUsuario(@Valid @RequestBody Usuario usuario) {
+  		
         return usuarioService.inserir(usuario);
     }
     
     @PostMapping("/usuarios/buscausuario")
-    public List<Usuario> buscaUsuario(@Valid @RequestBody Usuario usuario) {
+    public List<UsuarioDTO> buscaUsuario(@Valid @RequestBody Usuario usuario) {
         return usuarioService.buscaUsuario(usuario);
         
     }    
 
     @GetMapping("/usuarios/{id}")
-    public Usuario getUsuarioById(@PathVariable(value = "id") Integer usuarioId) {
+    public UsuarioDTO getUsuarioById(@PathVariable(value = "id") Integer usuarioId) {
         return usuarioService.listaId(usuarioId);
     }
 
